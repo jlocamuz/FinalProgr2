@@ -1,0 +1,33 @@
+{
+  "appApp": {
+    "orden": {
+      "home": {
+        "title": "Ordens",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Orden",
+        "createOrEditLabel": "Créer ou éditer un Orden",
+        "notFound": "Aucun Orden trouvé"
+      },
+      "created": "Un nouveau Orden a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Orden avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Orden avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Orden {{ id }} ?"
+      },
+      "detail": {
+        "title": "Orden"
+      },
+      "id": "ID",
+      "cliente": "Cliente",
+      "accionId": "Accion Id",
+      "accion": "Accion",
+      "operacion": "Operacion",
+      "cantidad": "Cantidad",
+      "precio": "Precio",
+      "fechaOperacion": "Fecha Operacion",
+      "modo": "Modo",
+      "operacionExitosa": "Operacion Exitosa",
+      "operacionObservaciones": "Operacion Observaciones"
+    }
+  }
+}

@@ -90,6 +90,10 @@ management:
 spring:
   application:
     name: app
+  
+  catedra: 
+    tokencito: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqbG9jYW11eiIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE3MzE1MTI5MTJ9.XpElpohwU_Ktw0wooR51lmotn9wBKdoAOzdngKeUspmqtqhBD2OazwpYGty1Vh7tmTE41hnGn9I_cs3XioxJXQ"
+
   profiles:
     # The commented value for `active` can be replaced with valid Spring profiles to load.
     # Otherwise, it will be filled in by maven when building the JAR file

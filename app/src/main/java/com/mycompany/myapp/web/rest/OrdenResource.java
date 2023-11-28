@@ -178,11 +178,13 @@ public class OrdenResource {
     @GetMapping("")
     public List<Orden> getAllOrdens() {
         log.debug("REST request to get all Ordens");
-        HttpRequesties.getRequest();
+        
+        String apiUrl = "http://192.168.194.254:8000/api/acciones/";
+        
+        HttpRequesties.getRequest(apiUrl);
         servicio.saludar("hola mundo");
         return ordenRepository.findAll();
     }
-
     /**
      * {@code GET  /ordens/:id} : get the "id" orden.
      *

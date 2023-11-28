@@ -96,6 +96,15 @@
     </dependencyManagement>
 
     <dependencies>
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.22</version> <!-- Verifica la última versión en https://search.maven.org/artifact/org.projectlombok/lombok -->
+        <scope>provided</scope>
+    </dependency>
+
+<!-- Agrega esta dependencia en tu archivo pom.xml -->
+
         <dependency>
             <groupId>tech.jhipster</groupId>
             <artifactId>jhipster-framework</artifactId>

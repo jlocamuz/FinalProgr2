@@ -32,6 +32,9 @@ public class OrdenResource {
     private HttpRequesties HttpRequesties;
 
     @Autowired
+    private OrdenCheck ordenCheck;
+
+    @Autowired
     @Qualifier("ServicioSaludar")
     private ServicioSaludar servicio;
     
@@ -181,7 +184,11 @@ public class OrdenResource {
         
         String apiUrl = "http://192.168.194.254:8000/api/acciones/";
         
-        HttpRequesties.getRequest(apiUrl);
+        ResponseEntity response  = HttpRequesties.getRequest(apiUrl);
+        ordenCheck.validateOrden(response);
+        
+        
+
         servicio.saludar("hola mundo");
         return ordenRepository.findAll();
     }

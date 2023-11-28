@@ -14,7 +14,7 @@ public class HttpRequesties {
     @Value("${spring.catedra.tokencito}")
     private String token;
 	
-    public void getRequest(String url) {
+    public ResponseEntity getRequest(String url) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -26,15 +26,6 @@ public class HttpRequesties {
         HttpStatus statusCode = (HttpStatus) responseEntity.getStatusCode();
         System.out.println("Código de estado HTTP: " + statusCode.value());
 
-        // Verificar el código de estado
-        if (statusCode == HttpStatus.OK) {
-            // La solicitud fue exitosa (código de estado 200 OK)
-            Object responseBody = responseEntity.getBody();
-            System.out.println("Respuesta exitosa: " + responseBody);
-        } else {
-            // Manejar otros códigos de estado según sea necesario
-            System.out.println("La solicitud no fue exitosa. Código de estado: " + statusCode.value());
-        }
+		return responseEntity;
     }
 }
-

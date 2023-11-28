@@ -2,6 +2,7 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Orden;
 import com.mycompany.myapp.repository.OrdenRepository;
+import com.mycompany.myapp.service.HttpRequesties;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,6 +28,8 @@ import tech.jhipster.web.util.ResponseUtil;
 @Transactional
 public class OrdenResource {
 
+    @Autowired
+    private HttpRequesties HttpRequesties;
 
     @Autowired
     @Qualifier("ServicioSaludar")
@@ -175,6 +178,7 @@ public class OrdenResource {
     @GetMapping("")
     public List<Orden> getAllOrdens() {
         log.debug("REST request to get all Ordens");
+        HttpRequesties.getRequest();
         servicio.saludar("hola mundo");
         return ordenRepository.findAll();
     }

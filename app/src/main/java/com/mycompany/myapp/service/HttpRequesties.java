@@ -19,7 +19,6 @@ public class HttpRequesties {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         HttpEntity<String> entity = new HttpEntity<>("", headers);
-
         ResponseEntity<Object> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
 
         // Obtener el código de estado HTTP

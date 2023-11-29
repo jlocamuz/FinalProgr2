@@ -29,10 +29,12 @@ import tech.jhipster.web.util.ResponseUtil;
 public class OrdenResource {
 
     @Autowired
-    private HttpRequesties HttpRequesties;
+    private HttpRequesties httpRequesties;
 
     @Autowired
-    private OrdenCheck ordenCheck;
+    private ValidateAccion validateAccionInj;
+    @Autowired
+    private ValidateCliente validateClienteInj;
 
     @Autowired
     @Qualifier("ServicioSaludar")
@@ -64,6 +66,10 @@ public class OrdenResource {
         if (orden.getId() != null) {
             throw new BadRequestAlertException("A new orden cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        validateAccionInj.validateAccion(orden.getAccion());
+        validateClienteInj.validateCliente(orden.getCliente());
+        //System.out.println("ACCION: " + orden.getAccion());
+        // aca chequear ordencheck (accion? cliente? ) si es valido guardar. si no no. devolver un mensaje
         Orden result = ordenRepository.save(orden);
         return ResponseEntity
             .created(new URI("/api/ordens/" + result.getId()))
@@ -182,14 +188,14 @@ public class OrdenResource {
     public List<Orden> getAllOrdens() {
         log.debug("REST request to get all Ordens");
         
-        String apiUrl = "http://192.168.194.254:8000/api/acciones/";
+        // String apiUrl = "http://192.168.194.254:8000/api/acciones/";
         
-        ResponseEntity response  = HttpRequesties.getRequest(apiUrl);
-        ordenCheck.validateOrden(response);
+        // ResponseEntity response  = HttpRequesties.getRequest(apiUrl);
+        // ordenCheck.validateOrden(response);
         
         
 
-        servicio.saludar("hola mundo");
+        // servicio.saludar("hola mundo");
         return ordenRepository.findAll();
     }
     /**

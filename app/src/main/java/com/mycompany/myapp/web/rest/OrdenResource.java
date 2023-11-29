@@ -40,7 +40,7 @@ public class OrdenResource {
     @Qualifier("ServicioSaludar")
     private ServicioSaludar servicio;
     
-    private final Logger log = LoggerFactory.getLogger(OrdenResource.class);
+    //private final Logger log = LoggerFactory.getLogger(OrdenResource.class);
 
     private static final String ENTITY_NAME = "orden";
 
@@ -61,20 +61,30 @@ public class OrdenResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<Orden> createOrden(@RequestBody Orden orden) throws URISyntaxException {
-        log.debug("REST request to save Orden : {}", orden);
+    public ResponseEntity<Object> createOrden(@RequestBody Orden orden) throws URISyntaxException {
+        //log.debug("REST request to save Orden : {}", orden);
         if (orden.getId() != null) {
             throw new BadRequestAlertException("A new orden cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        validateAccionInj.validateAccion(orden.getAccion());
-        validateClienteInj.validateCliente(orden.getCliente());
+
+        Boolean validacion1 =  validateAccionInj.validateAccion(orden.getAccion());
+        Boolean validacion2 = validateClienteInj.validateCliente(orden.getCliente());
         //System.out.println("ACCION: " + orden.getAccion());
         // aca chequear ordencheck (accion? cliente? ) si es valido guardar. si no no. devolver un mensaje
-        Orden result = ordenRepository.save(orden);
-        return ResponseEntity
-            .created(new URI("/api/ordens/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        if(validacion1 && validacion2){
+            Orden result = ordenRepository.save(orden);
+            return ResponseEntity
+                .created(new URI("/api/ordens/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+                .body(result);
+        }else{
+            return ResponseEntity
+            .badRequest()
+            .header(null)
+            .body("Accion o cliente no existente");
+        }
+        
+
     }
 
     /**
@@ -90,7 +100,7 @@ public class OrdenResource {
     @PutMapping("/{id}")
     public ResponseEntity<Orden> updateOrden(@PathVariable(value = "id", required = false) final Long id, @RequestBody Orden orden)
         throws URISyntaxException {
-        log.debug("REST request to update Orden : {}, {}", id, orden);
+        //log.debug("REST request to update Orden : {}, {}", id, orden);
         if (orden.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -123,7 +133,7 @@ public class OrdenResource {
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Orden> partialUpdateOrden(@PathVariable(value = "id", required = false) final Long id, @RequestBody Orden orden)
         throws URISyntaxException {
-        log.debug("REST request to partial update Orden partially : {}, {}", id, orden);
+        //log.debug("REST request to partial update Orden partially : {}, {}", id, orden);
         if (orden.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -186,7 +196,7 @@ public class OrdenResource {
      */
     @GetMapping("")
     public List<Orden> getAllOrdens() {
-        log.debug("REST request to get all Ordens");
+        //log.debug("REST request to get all Ordens");
         
         // String apiUrl = "http://192.168.194.254:8000/api/acciones/";
         
@@ -206,7 +216,7 @@ public class OrdenResource {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Orden> getOrden(@PathVariable Long id) {
-        log.debug("REST request to get Orden : {}", id);
+        //log.debug("REST request to get Orden : {}", id);
         Optional<Orden> orden = ordenRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(orden);
     }
@@ -219,7 +229,7 @@ public class OrdenResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrden(@PathVariable Long id) {
-        log.debug("REST request to delete Orden : {}", id);
+        //log.debug("REST request to delete Orden : {}", id);
         ordenRepository.deleteById(id);
         return ResponseEntity
             .noContent()

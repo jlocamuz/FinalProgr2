@@ -1,65 +1,53 @@
 package com.mycompany.myapp.web.rest;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.mycompany.myapp.service.HttpRequesties;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ValidateAccion {
 
     @Autowired
     private HttpRequesties httpRequesties;
-    
-    public boolean validateAccion(String accion) {
-        System.out.println("Accion desde ordencheck: " + accion);
 
-        // Existence check for accion (assuming your mechanism is implemented)
+    public Long validateAccion(String accion) {
+        System.out.println("Accion desde ordencheck: " + accion);
 
         String baseUrl = "http://192.168.194.254:8000/api/acciones/buscar";
         String url = baseUrl + "?codigo=" + accion;
 
-        ResponseEntity response = httpRequesties.getRequest(url);
+        ResponseEntity<Map<String, Object>> response = httpRequesties.getRequest(url);
 
-        // Assuming response.getBody() returns Object
-        Object responseBody = response.getBody();
+        if (response.getStatusCode().is2xxSuccessful()) {
+            Map<String, Object> responseBody = response.getBody();
 
-        // Check if the response body is an instance of LinkedHashMap
-        if (responseBody instanceof LinkedHashMap) {
-            // Cast the response body to LinkedHashMap
-            LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) responseBody;
-            
-            // Access the "acciones" key
-            Object accionesObject = responseMap.get("acciones");
-        
-            // Check if acciones is not null before further processing
-            if (accionesObject != null) {
-                if (accionesObject instanceof List) {
-                    List<Object> acciones = (List<Object>) accionesObject;
-                    
-                    // Check if acciones is not empty before further processing
-                    if (!acciones.isEmpty()) {
-                        System.out.println("ACCIONES: " + acciones);
-                        // Return true if acciones is not empty (contains at least one object)
-                        return true;
-                    } else {
-                        System.out.println("The 'acciones' list is empty in the response body.");
+            if (responseBody.containsKey("acciones")) {
+                // Si la respuesta contiene la clave "acciones", extraer la lista de acciones
+                List<Map<String, Object>> acciones = (List<Map<String, Object>>) responseBody.get("acciones");
+
+                for (Map<String, Object> accionesMap : acciones) {
+                    Object idValue = accionesMap.get("id");
+                    Object codigo = accionesMap.get("codigo");
+
+                    if (idValue != null && idValue instanceof Number && codigo.equals(accion)) {
+                        System.out.println("Acción encontrada con ID: " + idValue);
+                        return ((Number) idValue).longValue();
                     }
-                } else {
-                    System.out.println("The 'acciones' key does not contain a List in the response body.");
                 }
+
+                System.out.println("Acción no encontrada con código: " + accion);
+                return null;
             } else {
-                System.out.println("The 'acciones' key is null in the response body.");
+                System.out.println("La respuesta no contiene la clave 'acciones'. Procesar según sea necesario.");
+                return null;
             }
-        
-            // Return false if acciones is null or empty
-            return false;
+        } else {
+            System.out.println("La solicitud no fue exitosa. Código de estado: " + response.getStatusCodeValue());
+            return null;
         }
-        
-        // Return false if responseBody is not an instance of LinkedHashMap
-        return false;
     }
 }

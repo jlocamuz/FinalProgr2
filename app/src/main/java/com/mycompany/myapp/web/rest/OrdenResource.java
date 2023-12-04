@@ -35,6 +35,8 @@ public class OrdenResource {
     private ValidateAccion validateAccionInj;
     @Autowired
     private ValidateCliente validateClienteInj;
+    @Autowired
+    private ValidateCantidad validateCantidadInj;
 
     @Autowired
     @Qualifier("ServicioSaludar")
@@ -62,30 +64,35 @@ public class OrdenResource {
      */
     @PostMapping("")
     public ResponseEntity<Object> createOrden(@RequestBody Orden orden) throws URISyntaxException {
-        //log.debug("REST request to save Orden : {}", orden);
         if (orden.getId() != null) {
             throw new BadRequestAlertException("A new orden cannot already have an ID", ENTITY_NAME, "idexists");
         }
-
-        Boolean validacion1 =  validateAccionInj.validateAccion(orden.getAccion());
-        Boolean validacion2 = validateClienteInj.validateCliente(orden.getCliente());
-        //System.out.println("ACCION: " + orden.getAccion());
-        // aca chequear ordencheck (accion? cliente? ) si es valido guardar. si no no. devolver un mensaje
-        if(validacion1 && validacion2){
+    
+        String operacion = orden.getOperacion();
+        String accion = orden.getAccion();
+        Long cliente = orden.getCliente();
+        Integer cantidad = orden.getCantidad();
+        
+        Long accionId = validateAccionInj.validateAccion(accion); // int
+        Long clienteId = validateClienteInj.validateCliente(cliente); // int
+    //validateCantidadInj.validateCantidad(operacion, clienteId, accionId, cantidad)
+        if (clienteId != null && accionId != null && validateCantidadInj.validateCantidad(operacion, clienteId, accionId, cantidad)) {
             Orden result = ordenRepository.save(orden);
             return ResponseEntity
                 .created(new URI("/api/ordens/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
                 .body(result);
-        }else{
+        } else {
             return ResponseEntity
-            .badRequest()
-            .header(null)
-            .body("Accion o cliente no existente");
+                .badRequest()
+                .header(null)
+                .body("Accion, cliente o cantidad insuficiente");
         }
-        
-
     }
+    
+    
+
+    
 
     /**
      * {@code PUT  /ordens/:id} : Updates an existing orden.

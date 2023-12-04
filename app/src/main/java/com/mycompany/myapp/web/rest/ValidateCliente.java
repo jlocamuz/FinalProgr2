@@ -1,4 +1,5 @@
 package com.mycompany.myapp.web.rest;
+
 import com.mycompany.myapp.service.HttpRequesties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,36 +14,33 @@ public class ValidateCliente {
     @Autowired
     private HttpRequesties httpRequesties;
 
-    public boolean validateCliente(Long cliente) {
+    public Long validateCliente(Long cliente) {
         System.out.println("Cliente ID desde ordencheck: " + cliente);
-        String url = "http://192.168.194.254:8000/api/clientes/";
-        ResponseEntity<Map<String, Object>> response = httpRequesties.getRequest(url);
-
+        String url = "http://192.168.194.254:8000/api/clientes";
+        ResponseEntity<List<Map<String, Object>>> response = httpRequesties.getRequest(url);
         if (response.getStatusCode().is2xxSuccessful()) {
-            Map<String, Object> responseBody = response.getBody();
-
-            if (responseBody.containsKey("clientes")) {
-                // Si la respuesta contiene la clave "clientes", extraer la lista de clientes
-                List<Map<String, Object>> clientes = (List<Map<String, Object>>) responseBody.get("clientes");
-
+            List<Map<String, Object>> clientes = response.getBody();
+            
+            // Verificar si la lista de clientes no es nula y no está vacía
+            if (clientes != null && !clientes.isEmpty()) {
                 for (Map<String, Object> clienteMap : clientes) {
                     Object idValue = clienteMap.get("id");
 
                     if (idValue != null && idValue instanceof Number && ((Number) idValue).longValue() == cliente) {
                         System.out.println("Cliente encontrado con ID: " + cliente);
-                        return true;
+                        return cliente;
                     }
                 }
 
                 System.out.println("Cliente no encontrado con ID: " + cliente);
-                return false;
+                return null;
             } else {
-                System.out.println("La respuesta no contiene la clave 'clientes'. Procesar según sea necesario.");
-                return false;
+                System.out.println("La lista de clientes está vacía o es nula en la respuesta.");
+                return null;
             }
         } else {
             System.out.println("La solicitud no fue exitosa. Código de estado: " + response.getStatusCodeValue());
-            return false;
+            return null;
         }
     }
 }

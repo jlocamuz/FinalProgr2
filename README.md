@@ -22,3 +22,7 @@ services:
       - SPRING_DEVTOOLS_ADDITIONAL_OPTIONS=--spring-boot.run.fork=false # Disable fork for DevTools
     tty: true
 ```
+
+1) cd app
+2) jhipster
+3) jhipster import-jdl jhipster-jdl.jdl

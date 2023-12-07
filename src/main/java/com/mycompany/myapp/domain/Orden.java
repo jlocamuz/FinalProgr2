@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+// Import the Modo enum at the top of the file
 /**
  * A Orden.
  */
@@ -48,9 +49,8 @@ public class Orden implements Serializable {
     private Double precio;
 
     @Column(name = "fecha_operacion")
-    private ZonedDateTime fechaOperacion;
+    private ZonedDateTime fechaOperacion = ZonedDateTime.now();
 
-    @NotNull
     @Column(name = "modo", nullable = false)
     private String modo;
 

@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -67,6 +70,7 @@ public class OrdenResource {
             throw new BadRequestAlertException("A new orden cannot already have an ID", ENTITY_NAME, "idexists");
         }
 
+        //log.debug("atributo procesada {}", orden.getProcesada());
         String operacion = orden.getOperacion();
         String accion = orden.getAccion();
         Integer cliente = orden.getCliente();
@@ -191,7 +195,6 @@ public class OrdenResource {
      */
     @GetMapping("")
     public List<Orden> getAllOrdens() {
-        log.debug("hola");
         log.debug("REST request to get all Ordens");
         return ordenRepository.findAll();
     }
@@ -207,6 +210,41 @@ public class OrdenResource {
         log.debug("REST request to get Orden : {}", id);
         Optional<Orden> orden = ordenRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(orden);
+    }
+
+    // filters.
+    @GetMapping("/buscador")
+    @ResponseBody
+    public ResponseEntity<List<Orden>> getOrdenByCliente(
+        @RequestParam(required = false) String modo,
+        @RequestParam(required = false) Integer cliente,
+        @RequestParam(required = false) Integer accionId,
+        @RequestParam(required = false) String accion,
+        @RequestParam(required = true) String operacion,
+        @RequestParam(required = false) Integer cantidad,
+        @RequestParam(required = false) Double precio,
+        @RequestParam(required = false) ZonedDateTime fechaOperacion
+    ) {
+        List<Orden> ordenes = new ArrayList<>();
+
+        // Further filter based on other parameters if available
+        if (cliente != null) {
+            ordenes = ordenRepository.findByClienteAndOperacion(cliente, operacion);
+        } else if (accionId != null) {
+            ordenes = ordenRepository.findByAccionIdAndOperacion(accionId, operacion);
+        } else if (accion != null) {
+            ordenes = ordenRepository.findByAccionAndOperacion(accion, operacion);
+        } else if (operacion != null) {
+            ordenes = ordenRepository.findByOperacionAndOperacion(operacion, operacion);
+        } else if (cantidad != null) {
+            ordenes = ordenRepository.findByCantidadAndOperacion(cantidad, operacion);
+        } else if (precio != null) {
+            ordenes = ordenRepository.findByPrecioAndOperacion(precio, operacion);
+        } else if (fechaOperacion != null) {
+            ordenes = ordenRepository.findByFechaOperacionAndOperacion(fechaOperacion, operacion);
+        }
+
+        return new ResponseEntity<>(ordenes, HttpStatus.OK);
     }
 
     /**

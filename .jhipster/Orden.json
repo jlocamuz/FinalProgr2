@@ -1,6 +1,6 @@
 {
   "applications": "*",
-  "changelogDate": "20231206130244",
+  "changelogDate": "20231209201052",
   "entityTableName": "orden",
   "fields": [
     {
@@ -38,8 +38,13 @@
     },
     {
       "fieldName": "modo",
-      "fieldType": "String",
-      "fieldValidateRules": ["required"]
+      "fieldType": "Modo",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PRINCIPIODIA,AHORA,FINDIA"
+    },
+    {
+      "fieldName": "procesada",
+      "fieldType": "Boolean"
     }
   ],
   "name": "Orden",

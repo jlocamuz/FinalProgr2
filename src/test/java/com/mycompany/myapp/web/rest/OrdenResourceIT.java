@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.Orden;
+import com.mycompany.myapp.domain.enumeration.Modo;
 import com.mycompany.myapp.repository.OrdenRepository;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
@@ -55,8 +56,11 @@ class OrdenResourceIT {
     private static final ZonedDateTime DEFAULT_FECHA_OPERACION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_FECHA_OPERACION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
-    private static final String DEFAULT_MODO = "AAAAAAAAAA";
-    private static final String UPDATED_MODO = "BBBBBBBBBB";
+    private static final Modo DEFAULT_MODO = Modo.PRINCIPIODIA;
+    private static final Modo UPDATED_MODO = Modo.AHORA;
+
+    private static final Boolean DEFAULT_PROCESADA = false;
+    private static final Boolean UPDATED_PROCESADA = true;
 
     private static final String ENTITY_API_URL = "/api/ordens";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -90,7 +94,8 @@ class OrdenResourceIT {
             .cantidad(DEFAULT_CANTIDAD)
             .precio(DEFAULT_PRECIO)
             .fechaOperacion(DEFAULT_FECHA_OPERACION)
-            .modo(DEFAULT_MODO);
+            .modo(DEFAULT_MODO)
+            .procesada(DEFAULT_PROCESADA);
         return orden;
     }
 
@@ -109,7 +114,8 @@ class OrdenResourceIT {
             .cantidad(UPDATED_CANTIDAD)
             .precio(UPDATED_PRECIO)
             .fechaOperacion(UPDATED_FECHA_OPERACION)
-            .modo(UPDATED_MODO);
+            .modo(UPDATED_MODO)
+            .procesada(UPDATED_PROCESADA);
         return orden;
     }
 
@@ -139,6 +145,7 @@ class OrdenResourceIT {
         assertThat(testOrden.getPrecio()).isEqualTo(DEFAULT_PRECIO);
         assertThat(testOrden.getFechaOperacion()).isEqualTo(DEFAULT_FECHA_OPERACION);
         assertThat(testOrden.getModo()).isEqualTo(DEFAULT_MODO);
+        assertThat(testOrden.getProcesada()).isEqualTo(DEFAULT_PROCESADA);
     }
 
     @Test
@@ -280,7 +287,8 @@ class OrdenResourceIT {
             .andExpect(jsonPath("$.[*].cantidad").value(hasItem(DEFAULT_CANTIDAD)))
             .andExpect(jsonPath("$.[*].precio").value(hasItem(DEFAULT_PRECIO.doubleValue())))
             .andExpect(jsonPath("$.[*].fechaOperacion").value(hasItem(sameInstant(DEFAULT_FECHA_OPERACION))))
-            .andExpect(jsonPath("$.[*].modo").value(hasItem(DEFAULT_MODO)));
+            .andExpect(jsonPath("$.[*].modo").value(hasItem(DEFAULT_MODO.toString())))
+            .andExpect(jsonPath("$.[*].procesada").value(hasItem(DEFAULT_PROCESADA.booleanValue())));
     }
 
     @Test
@@ -302,7 +310,8 @@ class OrdenResourceIT {
             .andExpect(jsonPath("$.cantidad").value(DEFAULT_CANTIDAD))
             .andExpect(jsonPath("$.precio").value(DEFAULT_PRECIO.doubleValue()))
             .andExpect(jsonPath("$.fechaOperacion").value(sameInstant(DEFAULT_FECHA_OPERACION)))
-            .andExpect(jsonPath("$.modo").value(DEFAULT_MODO));
+            .andExpect(jsonPath("$.modo").value(DEFAULT_MODO.toString()))
+            .andExpect(jsonPath("$.procesada").value(DEFAULT_PROCESADA.booleanValue()));
     }
 
     @Test
@@ -332,7 +341,8 @@ class OrdenResourceIT {
             .cantidad(UPDATED_CANTIDAD)
             .precio(UPDATED_PRECIO)
             .fechaOperacion(UPDATED_FECHA_OPERACION)
-            .modo(UPDATED_MODO);
+            .modo(UPDATED_MODO)
+            .procesada(UPDATED_PROCESADA);
 
         restOrdenMockMvc
             .perform(
@@ -354,6 +364,7 @@ class OrdenResourceIT {
         assertThat(testOrden.getPrecio()).isEqualTo(UPDATED_PRECIO);
         assertThat(testOrden.getFechaOperacion()).isEqualTo(UPDATED_FECHA_OPERACION);
         assertThat(testOrden.getModo()).isEqualTo(UPDATED_MODO);
+        assertThat(testOrden.getProcesada()).isEqualTo(UPDATED_PROCESADA);
     }
 
     @Test
@@ -424,7 +435,12 @@ class OrdenResourceIT {
         Orden partialUpdatedOrden = new Orden();
         partialUpdatedOrden.setId(orden.getId());
 
-        partialUpdatedOrden.accionId(UPDATED_ACCION_ID).cantidad(UPDATED_CANTIDAD).modo(UPDATED_MODO);
+        partialUpdatedOrden
+            .cliente(UPDATED_CLIENTE)
+            .accionId(UPDATED_ACCION_ID)
+            .cantidad(UPDATED_CANTIDAD)
+            .precio(UPDATED_PRECIO)
+            .fechaOperacion(UPDATED_FECHA_OPERACION);
 
         restOrdenMockMvc
             .perform(
@@ -438,14 +454,15 @@ class OrdenResourceIT {
         List<Orden> ordenList = ordenRepository.findAll();
         assertThat(ordenList).hasSize(databaseSizeBeforeUpdate);
         Orden testOrden = ordenList.get(ordenList.size() - 1);
-        assertThat(testOrden.getCliente()).isEqualTo(DEFAULT_CLIENTE);
+        assertThat(testOrden.getCliente()).isEqualTo(UPDATED_CLIENTE);
         assertThat(testOrden.getAccionId()).isEqualTo(UPDATED_ACCION_ID);
         assertThat(testOrden.getAccion()).isEqualTo(DEFAULT_ACCION);
         assertThat(testOrden.getOperacion()).isEqualTo(DEFAULT_OPERACION);
         assertThat(testOrden.getCantidad()).isEqualTo(UPDATED_CANTIDAD);
-        assertThat(testOrden.getPrecio()).isEqualTo(DEFAULT_PRECIO);
-        assertThat(testOrden.getFechaOperacion()).isEqualTo(DEFAULT_FECHA_OPERACION);
-        assertThat(testOrden.getModo()).isEqualTo(UPDATED_MODO);
+        assertThat(testOrden.getPrecio()).isEqualTo(UPDATED_PRECIO);
+        assertThat(testOrden.getFechaOperacion()).isEqualTo(UPDATED_FECHA_OPERACION);
+        assertThat(testOrden.getModo()).isEqualTo(DEFAULT_MODO);
+        assertThat(testOrden.getProcesada()).isEqualTo(DEFAULT_PROCESADA);
     }
 
     @Test
@@ -468,7 +485,8 @@ class OrdenResourceIT {
             .cantidad(UPDATED_CANTIDAD)
             .precio(UPDATED_PRECIO)
             .fechaOperacion(UPDATED_FECHA_OPERACION)
-            .modo(UPDATED_MODO);
+            .modo(UPDATED_MODO)
+            .procesada(UPDATED_PROCESADA);
 
         restOrdenMockMvc
             .perform(
@@ -490,6 +508,7 @@ class OrdenResourceIT {
         assertThat(testOrden.getPrecio()).isEqualTo(UPDATED_PRECIO);
         assertThat(testOrden.getFechaOperacion()).isEqualTo(UPDATED_FECHA_OPERACION);
         assertThat(testOrden.getModo()).isEqualTo(UPDATED_MODO);
+        assertThat(testOrden.getProcesada()).isEqualTo(UPDATED_PROCESADA);
     }
 
     @Test

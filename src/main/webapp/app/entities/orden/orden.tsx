@@ -117,6 +117,10 @@ export const Orden = () => {
                 <th className="hand" onClick={sort('modo')}>
                   <Translate contentKey="appApp.orden.modo">Modo</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('modo')} />
                 </th>
+                <th className="hand" onClick={sort('procesada')}>
+                  <Translate contentKey="appApp.orden.procesada">Procesada</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('procesada')} />
+                </th>
                 <th />
               </tr>
             </thead>
@@ -135,7 +139,10 @@ export const Orden = () => {
                   <td>{orden.cantidad}</td>
                   <td>{orden.precio}</td>
                   <td>{orden.fechaOperacion ? <TextFormat type="date" value={orden.fechaOperacion} format={APP_DATE_FORMAT} /> : null}</td>
-                  <td>{orden.modo}</td>
+                  <td>
+                    <Translate contentKey={`appApp.Modo.${orden.modo}`} />
+                  </td>
+                  <td>{orden.procesada ? 'true' : 'false'}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/orden/${orden.id}`} color="info" size="sm" data-cy="entityDetailsButton">

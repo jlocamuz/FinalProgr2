@@ -1,5 +1,8 @@
 package com.mycompany.myapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mycompany.myapp.domain.enumeration.Modo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
@@ -7,7 +10,6 @@ import java.time.ZonedDateTime;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-// Import the Modo enum at the top of the file
 /**
  * A Orden.
  */
@@ -49,10 +51,15 @@ public class Orden implements Serializable {
     private Double precio;
 
     @Column(name = "fecha_operacion")
-    private ZonedDateTime fechaOperacion = ZonedDateTime.now();
+    private ZonedDateTime fechaOperacion;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "modo", nullable = false)
-    private String modo;
+    private Modo modo;
+
+    @JsonIgnore
+    private Boolean procesada = false; // Valor predeterminado
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -160,17 +167,30 @@ public class Orden implements Serializable {
         this.fechaOperacion = fechaOperacion;
     }
 
-    public String getModo() {
+    public Modo getModo() {
         return this.modo;
     }
 
-    public Orden modo(String modo) {
+    public Orden modo(Modo modo) {
         this.setModo(modo);
         return this;
     }
 
-    public void setModo(String modo) {
+    public void setModo(Modo modo) {
         this.modo = modo;
+    }
+
+    public Boolean getProcesada() {
+        return this.procesada;
+    }
+
+    public Orden procesada(Boolean procesada) {
+        this.setProcesada(procesada);
+        return this;
+    }
+
+    public void setProcesada(Boolean procesada) {
+        this.procesada = procesada;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -205,6 +225,7 @@ public class Orden implements Serializable {
             ", precio=" + getPrecio() +
             ", fechaOperacion='" + getFechaOperacion() + "'" +
             ", modo='" + getModo() + "'" +
+            ", procesada='" + getProcesada() + "'" +
             "}";
     }
 }

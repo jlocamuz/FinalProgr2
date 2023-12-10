@@ -1,11 +1,11 @@
-id;cliente;accion_id;accion;operacion;cantidad;precio;fecha_operacion;modo
-1;6455;30388;acidic thoroughly;unhealthy into;23412;4328.77;2023-12-06T11:12:07;starry afford
-2;23308;13667;sadly enormously;meh however;4193;26648.42;2023-12-05T14:38:04;if
-3;9667;4409;vote;mobster;16916;6883.13;2023-12-06T05:43:43;decline worth
-4;2910;19293;anti;whenever provided;15836;15854.6;2023-12-05T17:43:52;heavenly but boldly
-5;24526;2342;ouch;gadzooks how;27501;7520.66;2023-12-05T20:45:48;abaft zowie against
-6;23537;13817;suspect;friend several forenenst;4786;2142.98;2023-12-05T23:26:27;yowza permit
-7;12515;5185;piracy even oof;after instead;12410;28398.64;2023-12-05T19:42:38;lasting
-8;11684;18178;cluster thin;times phew restfully;11194;2427.5;2023-12-06T04:41:18;considering landform sight
-9;17352;7298;unimpressively upon;zowie phew;19344;3391.41;2023-12-05T16:47:55;flesh
-10;7730;109;pinch;procreate dangle;3737;12249.82;2023-12-06T10:15:22;through
+id;cliente;accion_id;accion;operacion;cantidad;precio;fecha_operacion;modo;procesada
+1;6455;30388;acidic thoroughly;unhealthy into;23412;4328.77;2023-12-09T18:20:15;AHORA;true
+2;14591;27141;below;amongst;25596;28184.75;2023-12-08T22:58:31;AHORA;false
+3;17296;13750;whoever with thoroughly;since next gestate;14726;13321.84;2023-12-09T06:27:26;PRINCIPIODIA;false
+4;16916;6883;toward;worth;2910;19293.17;2023-12-09T15:32:12;PRINCIPIODIA;true
+5;22745;0;thin;always;24034;17769.34;2023-12-09T08:34:55;AHORA;false
+6;23893;7761;fussy hm;an ouch;16043;4165.33;2023-12-08T22:10:23;PRINCIPIODIA;true
+7;5480;15437;how indeed;restfully whereas;31264;6672.46;2023-12-09T18:08:48;FINDIA;true
+8;6229;1249;steel around;creative believe;18574;13161.36;2023-12-09T19:39:58;FINDIA;true
+9;12742;26027;boo speedily;jubilantly collocate;11018;30169.64;2023-12-08T20:42:39;AHORA;false
+10;18696;31503;forenenst;sushi;16641;9500.91;2023-12-09T12:48:44;AHORA;false

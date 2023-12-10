@@ -2,22 +2,17 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Orden;
 import com.mycompany.myapp.repository.OrdenRepository;
-import com.mycompany.myapp.service.HttpRequesties;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -31,18 +26,6 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/ordens")
 @Transactional
 public class OrdenResource {
-
-    @Autowired
-    private HttpRequesties httpRequesties;
-
-    @Autowired
-    private ValidateAccion validateAccionInj;
-
-    @Autowired
-    private ValidateCliente validateClienteInj;
-
-    @Autowired
-    private ValidateCantidad validateCantidadInj;
 
     private final Logger log = LoggerFactory.getLogger(OrdenResource.class);
 
@@ -65,29 +48,16 @@ public class OrdenResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<Object> createOrden(@RequestBody Orden orden) throws URISyntaxException {
+    public ResponseEntity<Orden> createOrden(@Valid @RequestBody Orden orden) throws URISyntaxException {
+        log.debug("REST request to save Orden : {}", orden);
         if (orden.getId() != null) {
             throw new BadRequestAlertException("A new orden cannot already have an ID", ENTITY_NAME, "idexists");
         }
-
-        //log.debug("atributo procesada {}", orden.getProcesada());
-        String operacion = orden.getOperacion();
-        String accion = orden.getAccion();
-        Integer cliente = orden.getCliente();
-        Integer cantidad = orden.getCantidad();
-
-        Integer accionId = validateAccionInj.validateAccion(accion); // int
-        Integer clienteId = validateClienteInj.validateCliente(cliente); // int
-        //validateCantidadInj.validateCantidad(operacion, clienteId, accionId, cantidad)
-        if (clienteId != null && accionId != null && validateCantidadInj.validateCantidad(operacion, clienteId, accionId, cantidad)) {
-            Orden result = ordenRepository.save(orden);
-            return ResponseEntity
-                .created(new URI("/api/ordens/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-                .body(result);
-        } else {
-            return ResponseEntity.badRequest().header(null).body("Accion, cliente o cantidad insuficiente");
-        }
+        Orden result = ordenRepository.save(orden);
+        return ResponseEntity
+            .created(new URI("/api/ordens/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
@@ -177,6 +147,9 @@ public class OrdenResource {
                 if (orden.getModo() != null) {
                     existingOrden.setModo(orden.getModo());
                 }
+                if (orden.getProcesada() != null) {
+                    existingOrden.setProcesada(orden.getProcesada());
+                }
 
                 return existingOrden;
             })
@@ -210,41 +183,6 @@ public class OrdenResource {
         log.debug("REST request to get Orden : {}", id);
         Optional<Orden> orden = ordenRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(orden);
-    }
-
-    // filters.
-    @GetMapping("/buscador")
-    @ResponseBody
-    public ResponseEntity<List<Orden>> getOrdenByCliente(
-        @RequestParam(required = false) String modo,
-        @RequestParam(required = false) Integer cliente,
-        @RequestParam(required = false) Integer accionId,
-        @RequestParam(required = false) String accion,
-        @RequestParam(required = true) String operacion,
-        @RequestParam(required = false) Integer cantidad,
-        @RequestParam(required = false) Double precio,
-        @RequestParam(required = false) ZonedDateTime fechaOperacion
-    ) {
-        List<Orden> ordenes = new ArrayList<>();
-
-        // Further filter based on other parameters if available
-        if (cliente != null) {
-            ordenes = ordenRepository.findByClienteAndOperacion(cliente, operacion);
-        } else if (accionId != null) {
-            ordenes = ordenRepository.findByAccionIdAndOperacion(accionId, operacion);
-        } else if (accion != null) {
-            ordenes = ordenRepository.findByAccionAndOperacion(accion, operacion);
-        } else if (operacion != null) {
-            ordenes = ordenRepository.findByOperacionAndOperacion(operacion, operacion);
-        } else if (cantidad != null) {
-            ordenes = ordenRepository.findByCantidadAndOperacion(cantidad, operacion);
-        } else if (precio != null) {
-            ordenes = ordenRepository.findByPrecioAndOperacion(precio, operacion);
-        } else if (fechaOperacion != null) {
-            ordenes = ordenRepository.findByFechaOperacionAndOperacion(fechaOperacion, operacion);
-        }
-
-        return new ResponseEntity<>(ordenes, HttpStatus.OK);
     }
 
     /**

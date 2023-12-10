@@ -25,7 +25,8 @@
       "cantidad": "Cantidad",
       "precio": "Precio",
       "fechaOperacion": "Fecha Operacion",
-      "modo": "Modo"
+      "modo": "Modo",
+      "procesada": "Procesada"
     }
   }
 }

@@ -1,3 +1,5 @@
+import { Modo } from 'app/shared/model/enumerations/modo.model';
+
 export interface IOrden {
   id?: number;
   cliente?: number;
@@ -7,7 +9,10 @@ export interface IOrden {
   cantidad?: number;
   precio?: number;
   fechaOperacion?: string | null;
-  modo?: string;
+  modo?: keyof typeof Modo;
+  procesada?: boolean | null;
 }
 
-export const defaultValue: Readonly<IOrden> = {};
+export const defaultValue: Readonly<IOrden> = {
+  procesada: false,
+};

@@ -9,6 +9,7 @@ import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { IOrden } from 'app/shared/model/orden.model';
+import { Modo } from 'app/shared/model/enumerations/modo.model';
 import { getEntity, updateEntity, createEntity, reset } from './orden.reducer';
 
 export const OrdenUpdate = () => {
@@ -23,6 +24,7 @@ export const OrdenUpdate = () => {
   const loading = useAppSelector(state => state.orden.loading);
   const updating = useAppSelector(state => state.orden.updating);
   const updateSuccess = useAppSelector(state => state.orden.updateSuccess);
+  const modoValues = Object.keys(Modo);
 
   const handleClose = () => {
     navigate('/orden');
@@ -79,6 +81,7 @@ export const OrdenUpdate = () => {
           fechaOperacion: displayDefaultDateTime(),
         }
       : {
+          modo: 'PRINCIPIODIA',
           ...ordenEntity,
           fechaOperacion: convertDateTimeFromServer(ordenEntity.fechaOperacion),
         };
@@ -171,15 +174,20 @@ export const OrdenUpdate = () => {
                 type="datetime-local"
                 placeholder="YYYY-MM-DD HH:mm"
               />
+              <ValidatedField label={translate('appApp.orden.modo')} id="orden-modo" name="modo" data-cy="modo" type="select">
+                {modoValues.map(modo => (
+                  <option value={modo} key={modo}>
+                    {translate('appApp.Modo.' + modo)}
+                  </option>
+                ))}
+              </ValidatedField>
               <ValidatedField
-                label={translate('appApp.orden.modo')}
-                id="orden-modo"
-                name="modo"
-                data-cy="modo"
-                type="text"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                }}
+                label={translate('appApp.orden.procesada')}
+                id="orden-procesada"
+                name="procesada"
+                data-cy="procesada"
+                check
+                type="checkbox"
               />
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/orden" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />

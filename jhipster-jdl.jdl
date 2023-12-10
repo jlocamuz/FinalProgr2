@@ -1,11 +1,18 @@
-entity Orden {
-    cliente Integer required,
-    accionId Integer required,
-    accion String,
-    operacion String required,
-    cantidad Integer required,
-    precio Double required,
-    fechaOperacion ZonedDateTime,
-    modo String required
+enum Modo {
+  PRINCIPIODIA,
+  AHORA,
+  FINDIA
 }
 
+// Define the Orden entity with modo as an enum field
+entity Orden {
+  cliente Integer required,
+  accionId Integer required,
+  accion String,
+  operacion String required,
+  cantidad Integer required,
+  precio Double required,
+  fechaOperacion ZonedDateTime,
+  modo Modo required
+}
+ 

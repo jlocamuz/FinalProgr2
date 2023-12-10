@@ -82,6 +82,12 @@ export const OrdenDetail = () => {
             </span>
           </dt>
           <dd>{ordenEntity.modo}</dd>
+          <dt>
+            <span id="procesada">
+              <Translate contentKey="appApp.orden.procesada">Procesada</Translate>
+            </span>
+          </dt>
+          <dd>{ordenEntity.procesada ? 'true' : 'false'}</dd>
         </dl>
         <Button tag={Link} to="/orden" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

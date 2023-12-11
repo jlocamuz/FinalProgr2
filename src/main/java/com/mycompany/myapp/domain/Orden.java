@@ -51,14 +51,13 @@ public class Orden implements Serializable {
     private Double precio;
 
     @Column(name = "fecha_operacion")
-    private ZonedDateTime fechaOperacion;
+    private ZonedDateTime fechaOperacion = ZonedDateTime.now();
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "modo", nullable = false)
     private Modo modo;
 
-    @JsonIgnore
     private Boolean procesada = false; // Valor predeterminado
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

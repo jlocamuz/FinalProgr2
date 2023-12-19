@@ -90,6 +90,17 @@
     </dependencyManagement>
 
     <dependencies>
+            <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>tech.jhipster</groupId>
@@ -189,14 +200,7 @@
             <version>${archunit-junit5.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <!-- Adding the engine dependency to the surefire-plugin unfortunately does not work in the current version. -->
-            <!-- https://www.archunit.org/userguide/html/000_Index.html#_junit_5 -->
-            <groupId>com.tngtech.archunit</groupId>
-            <artifactId>archunit-junit5-engine</artifactId>
-            <version>${archunit-junit5.version}</version>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
@@ -271,6 +275,7 @@
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
         </dependency>
+        
     </dependencies>
 
     <build>
@@ -809,6 +814,18 @@
                             <artifactId>h2</artifactId>
                             <version>${h2.version}</version>
                         </dependency>
+                        <dependency>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-starter-test</artifactId>
+                            <scope>test</scope>
+                            <version>2.5.0</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.h2database</groupId>
+                            <artifactId>h2</artifactId>
+                            <scope>test</scope>
+                        </dependency>
+                        
                     </dependencies>
                 </plugin>
                 <plugin>

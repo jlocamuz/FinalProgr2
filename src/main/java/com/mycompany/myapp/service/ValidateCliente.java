@@ -1,9 +1,9 @@
-package com.mycompany.myapp.web.rest;
+package com.mycompany.myapp.service;
 
-import com.mycompany.myapp.service.HttpRequesties;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +13,13 @@ public class ValidateCliente {
     @Autowired
     private HttpRequesties httpRequesties;
 
+    @Value("${spring.catedra.tokencito}")
+    private String token;
+
     public Integer validateCliente(Integer cliente) {
         System.out.println("Cliente ID desde ordencheck: " + cliente);
         String url = "http://192.168.194.254:8000/api/clientes";
-        ResponseEntity<List<Map<String, Object>>> response = httpRequesties.getRequest(url);
+        ResponseEntity<List<Map<String, Object>>> response = httpRequesties.getRequest(url, token);
         if (response.getStatusCode().is2xxSuccessful()) {
             List<Map<String, Object>> clientes = response.getBody();
 

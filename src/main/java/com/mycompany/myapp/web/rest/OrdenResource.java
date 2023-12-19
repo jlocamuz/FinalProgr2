@@ -3,6 +3,9 @@ package com.mycompany.myapp.web.rest;
 import com.mycompany.myapp.domain.Orden;
 import com.mycompany.myapp.repository.OrdenRepository;
 import com.mycompany.myapp.service.HttpRequesties;
+import com.mycompany.myapp.service.ValidateAccion;
+import com.mycompany.myapp.service.ValidateCantidad;
+import com.mycompany.myapp.service.ValidateCliente;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +47,9 @@ public class OrdenResource {
     @Autowired
     private ValidateCliente validateClienteInj;
 
+    // @Autowired
+    // private ValidateFecha validateFecha;
+
     @Autowired
     private ValidateCantidad validateCantidadInj;
 
@@ -59,7 +66,51 @@ public class OrdenResource {
         this.ordenRepository = ordenRepository;
     }
 
-    // filters.
+    // PARA ANULAR
+
+    @GetMapping("/noprocesadas")
+    @ResponseBody
+    public ResponseEntity<List<Orden>> getFiltroNoProcesadas(
+        @RequestParam(required = false) String modo,
+        @RequestParam(required = false) Integer cliente,
+        @RequestParam(required = false) Integer accionId,
+        @RequestParam(required = false) String accion,
+        @RequestParam(required = false) String operacion,
+        @RequestParam(required = false) Integer cantidad,
+        @RequestParam(required = false) Double precio,
+        @RequestParam(required = false) ZonedDateTime fechaOperacion
+    ) {
+        // Obtén todas las órdenes no procesadas
+        List<Orden> ordenes = ordenRepository.findByProcesadaFalse();
+
+        // Aplica filtros adicionales basados en parámetros
+        if (cliente != null) {
+            ordenes = ordenes.stream().filter(orden -> Objects.equals(orden.getCliente(), cliente)).collect(Collectors.toList());
+        }
+        if (accionId != null) {
+            ordenes = ordenes.stream().filter(orden -> Objects.equals(orden.getAccionId(), accionId)).collect(Collectors.toList());
+        }
+        if (accion != null) {
+            ordenes = ordenes.stream().filter(orden -> Objects.equals(orden.getAccion(), accion)).collect(Collectors.toList());
+        }
+        if (operacion != null) {
+            ordenes = ordenes.stream().filter(orden -> Objects.equals(orden.getOperacion(), operacion)).collect(Collectors.toList());
+        }
+        if (cantidad != null) {
+            ordenes = ordenes.stream().filter(orden -> Objects.equals(orden.getCantidad(), cantidad)).collect(Collectors.toList());
+        }
+        if (precio != null) {
+            ordenes = ordenes.stream().filter(orden -> Objects.equals(orden.getPrecio(), precio)).collect(Collectors.toList());
+        }
+        if (fechaOperacion != null) {
+            ordenes =
+                ordenes.stream().filter(orden -> Objects.equals(orden.getFechaOperacion(), fechaOperacion)).collect(Collectors.toList());
+        }
+
+        return new ResponseEntity<>(ordenes, HttpStatus.OK);
+    }
+
+    // filters. REPORTES
     @GetMapping("/buscador")
     @ResponseBody
     public ResponseEntity<List<Orden>> getOrdenByCliente(
@@ -67,7 +118,7 @@ public class OrdenResource {
         @RequestParam(required = false) Integer cliente,
         @RequestParam(required = false) Integer accionId,
         @RequestParam(required = false) String accion,
-        @RequestParam(required = true) String operacion,
+        @RequestParam(required = false) String operacion,
         @RequestParam(required = false) Integer cantidad,
         @RequestParam(required = false) Double precio,
         @RequestParam(required = false) ZonedDateTime fechaOperacion
@@ -100,6 +151,7 @@ public class OrdenResource {
             throw new BadRequestAlertException("A new orden cannot already have an ID", ENTITY_NAME, "idexists");
         }
 
+        // Validar y obtener IDs
         String operacion = orden.getOperacion();
         String accion = orden.getAccion();
         Integer cliente = orden.getCliente();
@@ -107,16 +159,16 @@ public class OrdenResource {
 
         Integer accionId = validateAccionInj.validateAccion(accion); // int
         Integer clienteId = validateClienteInj.validateCliente(cliente); // int
-        //validateCantidadInj.validateCantidad(operacion, clienteId, accionId, cantidad)
         if (clienteId != null && accionId != null && validateCantidadInj.validateCantidad(operacion, clienteId, accionId, cantidad)) {
+            // Guardar la orden
             Orden result = ordenRepository.save(orden);
-            log.debug("orden creada");
+            log.debug("Orden creada");
             return ResponseEntity
                 .created(new URI("/api/ordens/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
                 .body(result);
         } else {
-            return ResponseEntity.badRequest().header(null).body("Accion, cliente o cantidad insuficiente");
+            return ResponseEntity.badRequest().header(null).body("Accion, cliente, cantidad insuficiente o fecha no válida");
         }
     }
 
@@ -200,10 +252,13 @@ public class OrdenResource {
 
     @GetMapping("")
     public List<Orden> getAllOrdens() {
+        String token =
+            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTcyODgyOTM1MSwiYXV0aCI6IlJPTEVfQURNSU4gUk9MRV9VU0VSIiwiaWF0IjoxNzAyOTA5MzUxfQ.4BjXQcquavqIn7N18ykwyPJG_GjVYDt1K4XvjMpIEoSj9tUt7u7Mr7b6pq5uHnFNCRwFbbMHdVObbw1QZOPoEQ";
+        //ResponseEntity<Map<String, Object>> response = httpRequesties.getRequest("http://jhipster2:9090/api/users", token);
         return ordenRepository.findAll();
     }
 
-    @GetMapping("/ordens")
+    @GetMapping("/procesador")
     public ResponseEntity<List<Orden>> getAllOrdensProcesadaFalse() {
         // Obtener todas las órdenes con procesada=false
         List<Orden> ordens = ordenRepository.findByProcesadaFalse();
@@ -221,6 +276,7 @@ public class OrdenResource {
         return ResponseUtil.wrapOrNotFound(orden);
     }
 
+    // borrar solo cdo este procesada.
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteOrden(@PathVariable Long id) {
         // Obtener la orden por ID

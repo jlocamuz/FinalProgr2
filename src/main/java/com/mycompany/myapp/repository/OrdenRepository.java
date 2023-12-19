@@ -45,6 +45,4 @@ public interface OrdenRepository extends JpaRepository<Orden, Long> {
     List<Orden> findByPrecioAndOperacion(Double precio, String modo);
 
     List<Orden> findByFechaOperacionAndOperacion(ZonedDateTime fechaOperacion, String modo);
-
-    Object findAll(Orden orden);
 }

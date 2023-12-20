@@ -19,7 +19,7 @@ public class ValidateFecha {
 
     public boolean validarFecha(Modo modo, ZonedDateTime fecha) {
         log.info("fecha" + fecha);
-        log.info("Iniciando validarFechaYModo");
+        log.info("Iniciando validarFecha");
 
         if (Modo.AHORA.equals(modo)) {
             ZonedDateTime ahoraEnArgentina = ZonedDateTime.now(ZoneId.of("GMT-3"));

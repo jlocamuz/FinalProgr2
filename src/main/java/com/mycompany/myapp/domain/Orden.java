@@ -156,16 +156,16 @@ public class Orden implements Serializable {
     }
 
     public ZonedDateTime getFechaOperacion() {
-        return this.fechaOperacion.now(ZoneId.of("GMT-3"));
+        return this.fechaOperacion;
     }
 
     public Orden fechaOperacion(ZonedDateTime fechaOperacion) {
-        this.setFechaOperacion(fechaOperacion.now(ZoneId.of("GMT-3")));
+        this.setFechaOperacion(fechaOperacion);
         return this;
     }
 
     public void setFechaOperacion(ZonedDateTime fechaOperacion) {
-        this.fechaOperacion = fechaOperacion.now(ZoneId.of("GMT-3"));
+        this.fechaOperacion = ZonedDateTime.now();
     }
 
     public Modo getModo() {

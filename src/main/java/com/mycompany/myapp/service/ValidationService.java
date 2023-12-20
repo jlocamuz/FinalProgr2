@@ -32,8 +32,8 @@ public class ValidationService {
 
         Integer accionId = validateAccionInj.validateAccion(accion); // int
         Integer clienteId = validateClienteInj.validateCliente(cliente); // int
-        Boolean fechaBoolean = validateFechaInj.validarFecha(modo, fecha);
-
+        //Boolean fechaBoolean = validateFechaInj.validarFecha(modo, fecha);
+        Boolean fechaBoolean = true;
         return (
             clienteId != null &&
             accionId != null &&

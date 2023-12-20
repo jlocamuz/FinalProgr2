@@ -18,11 +18,10 @@ public class ValidateFecha {
     private final Logger log = LoggerFactory.getLogger(ValidateFecha.class);
 
     public boolean validarFecha(Modo modo, ZonedDateTime fecha) {
-        log.info("fecha" + fecha);
         log.info("Iniciando validarFecha");
 
         if (Modo.AHORA.equals(modo)) {
-            ZonedDateTime ahoraEnArgentina = ZonedDateTime.now(ZoneId.of("GMT-3"));
+            ZonedDateTime ahoraEnArgentina = ZonedDateTime.now();
             ZonedDateTime fechaOperacion = fecha;
 
             boolean esHoyEntre9y6 =

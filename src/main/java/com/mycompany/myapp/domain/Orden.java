@@ -53,7 +53,7 @@ public class Orden implements Serializable {
     private Double precio;
 
     @Column(name = "fecha_operacion")
-    private ZonedDateTime fechaOperacion = ZonedDateTime.now(ZoneId.of("America/Argentina/Buenos_Aires"));
+    private ZonedDateTime fechaOperacion = ZonedDateTime.now();
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -156,7 +156,7 @@ public class Orden implements Serializable {
     }
 
     public ZonedDateTime getFechaOperacion() {
-        return this.fechaOperacion.withZoneSameInstant(ZoneId.of("America/Argentina/Buenos_Aires"));
+        return this.fechaOperacion;
     }
 
     public Orden fechaOperacion(ZonedDateTime fechaOperacion) {

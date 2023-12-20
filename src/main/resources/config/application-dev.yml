@@ -13,6 +13,13 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
+logging:
+  level:
+    ROOT: INFO
+    tech.jhipster: INFO
+    org.hibernate.SQL: INFO
+    com.mycompany.myapp: INFO
+
 spring:
   catedra:
     tokencito: 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqbG9jYW11eiIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE3MzI4NzI3NTl9.OgjxixX5qH7oFPDT-K2LcFrwsR6i0pEMVksrC5F4_nc9ldC-LcJyxdxSLO0BSirW2Hb611PwCudCiVtcD6JCbA'

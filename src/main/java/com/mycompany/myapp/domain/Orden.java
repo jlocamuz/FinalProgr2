@@ -6,7 +6,9 @@ import com.mycompany.myapp.domain.enumeration.Modo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -51,7 +53,7 @@ public class Orden implements Serializable {
     private Double precio;
 
     @Column(name = "fecha_operacion")
-    private ZonedDateTime fechaOperacion = ZonedDateTime.now();
+    private ZonedDateTime fechaOperacion = ZonedDateTime.now(ZoneId.of("GMT-3"));
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -154,16 +156,16 @@ public class Orden implements Serializable {
     }
 
     public ZonedDateTime getFechaOperacion() {
-        return this.fechaOperacion;
+        return this.fechaOperacion.now(ZoneId.of("GMT-3"));
     }
 
     public Orden fechaOperacion(ZonedDateTime fechaOperacion) {
-        this.setFechaOperacion(fechaOperacion);
+        this.setFechaOperacion(fechaOperacion.now(ZoneId.of("GMT-3")));
         return this;
     }
 
     public void setFechaOperacion(ZonedDateTime fechaOperacion) {
-        this.fechaOperacion = fechaOperacion;
+        this.fechaOperacion = fechaOperacion.now(ZoneId.of("GMT-3"));
     }
 
     public Modo getModo() {

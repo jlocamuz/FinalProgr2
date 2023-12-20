@@ -91,6 +91,12 @@
 
     <dependencies>
             <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+            <version>3.12.4</version> <!-- Use the latest version -->
+        </dependency>
+            <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>2.5.3</version>
@@ -101,7 +107,12 @@
             <scope>runtime</scope>
         </dependency>
 
-
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>3.0.0</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>tech.jhipster</groupId>
             <artifactId>jhipster-framework</artifactId>

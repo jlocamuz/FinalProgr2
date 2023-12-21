@@ -12,6 +12,7 @@ import java.util.TimeZone;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -25,6 +26,9 @@ import tech.jhipster.config.JHipsterConstants;
 @SpringBootApplication
 @EnableConfigurationProperties({ LiquibaseProperties.class, ApplicationProperties.class })
 public class AppApp {
+
+    @Value("${spring.jpa.properties.hibernate.jdbc.time_zone}")
+    private String zonahoraria;
 
     private static final Logger log = LoggerFactory.getLogger(AppApp.class);
 
@@ -43,7 +47,7 @@ public class AppApp {
      */
     @PostConstruct
     public void initApplication() {
-        TimeZone.setDefault(TimeZone.getTimeZone("America/Argentina/Buenos_Aires"));
+        TimeZone.setDefault(TimeZone.getTimeZone(zonahoraria));
         Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
         if (
             activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) &&

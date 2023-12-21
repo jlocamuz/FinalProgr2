@@ -117,7 +117,8 @@ public class OrdenResource {
         @RequestParam(name = "operacion", required = false) String operacion,
         @RequestParam(name = "cantidad", required = false) Integer cantidad,
         @RequestParam(name = "precio", required = false) Double precio,
-        @RequestParam(name = "fechaOperacion", required = false) ZonedDateTime fechaOperacion
+        @RequestParam(name = "fechaOperacion1", required = false) ZonedDateTime fechaOperacion1,
+        @RequestParam(name = "fechaOperacion2", required = false) ZonedDateTime fechaOperacion2
     ) {
         List<Orden> ordenes = new ArrayList<>();
 
@@ -146,6 +147,11 @@ public class OrdenResource {
             spec = spec.and((root, query, builder) -> builder.equal(root.get("operacion"), operacion));
             filtros += "operacion " + operacion + ", ";
         }
+        if (fechaOperacion1 != null && fechaOperacion2 != null) {
+            spec = spec.and((root, query, builder) -> builder.between(root.get("fechaOperacion"), fechaOperacion1, fechaOperacion2));
+            filtros += "fechaOperacion entre " + fechaOperacion1 + " y " + fechaOperacion2 + ", ";
+        }
+
         // Add conditions for other parameters...
 
         // Fetch orders based on combined specifications
@@ -266,7 +272,7 @@ public class OrdenResource {
 
     @GetMapping("/procesador")
     public ResponseEntity<Map<String, List<Orden>>> getAllOrdensProcesadaFalse() {
-        System.out.println("me llama el procesador!");
+        log.info("me llama el procesador!");
         // Obtener todas las órdenes con procesada=false
         List<Orden> ordens = ordenRepository.findByProcesadaFalse();
 

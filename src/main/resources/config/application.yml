@@ -16,6 +16,9 @@
 
 ---
 # Conditionally disable springdoc on missing api-docs profile
+
+zonahoraria:
+
 spring:
   config:
     activate:

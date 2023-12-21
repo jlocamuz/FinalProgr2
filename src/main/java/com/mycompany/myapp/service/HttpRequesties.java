@@ -7,15 +7,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-// En tu clase de servicio HttpRequesties
-// En tu clase de servicio HttpRequesties
 @Service
 public class HttpRequesties {
 
@@ -38,7 +35,7 @@ public class HttpRequesties {
         ResponseEntity<Object> responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, entity, Object.class);
 
         // Obtener el código de estado HTTP
-        HttpStatusCode statusCode = responseEntity.getStatusCode();
+        HttpStatus statusCode = (HttpStatus) responseEntity.getStatusCode();
         log.info("status {}", statusCode);
 
         return responseEntity;
